@@ -3,6 +3,10 @@ package com.RestAssuredUdemyRS;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.testng.Assert;
 
 import files.Payload;
@@ -12,7 +16,7 @@ import io.restassured.path.json.JsonPath;
 
 public class Basics {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		//validate if add place api is working as expected
 		
 		/*
@@ -22,7 +26,8 @@ public class Basics {
 		 * then - validate the response*/
 		RestAssured.baseURI = "https://rahulshettyacademy.com";
 		String response=given().log().all().queryParam("key", "qaclick123").header("Content-Type","application/json")
-			.body(Payload.addPlace())
+			.body(new String(Files.readAllBytes(Paths.get("C:\\Users\\Tariq\\eclipse-workspace\\com.RestAssuredUdemyRS\\AddPlace.json"))))
+//			.body(Payload.addPlace())
 			.when().post("/maps/api/place/add/json")//resource
 			.then().assertThat().statusCode(200).body("scope",equalTo("APP"))
 			.header("Server","Apache/2.4.52 (Ubuntu)").extract().response().asString(); 	//Add place->update place with new address->Get place to validate if new address is present
